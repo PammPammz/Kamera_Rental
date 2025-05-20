@@ -1,11 +1,10 @@
-import { Button } from '@/components/ui/button'; // Button component
-import AppLayout from '@/layouts/app-layout'; // App Layout component
-import { Category, type BreadcrumbItem } from '@/types'; // Category type definition
-import { Inertia } from '@inertiajs/inertia'; // Inertia.js for handling navigation
-import { Head } from '@inertiajs/react'; // Inertia's Head for managing titles
+import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
+import { Category, type BreadcrumbItem } from '@/types';
+import { Inertia } from '@inertiajs/inertia';
+import { Head } from '@inertiajs/react';
 
-// Breadcrumbs for the Categories page
-const breadcrumbs: BreadcrumbItem[] = [
+export const categoriesBreadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
         href: '/dashboard',
@@ -17,7 +16,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface Props {
-    categories: Category[]; // List of categories passed as props
+    categories: Category[];
 }
 
 const CategoryIndex = ({ categories }: Props) => {
@@ -28,48 +27,47 @@ const CategoryIndex = ({ categories }: Props) => {
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Categories" /> {/* Set page title */}
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="my-4">
-                    <Button onClick={() => Inertia.visit('/dashboard/categories/create')} className="mb-4">
-                        Add New Category
-                    </Button>
-                    <div className="overflow-hidden rounded-xl border">
-                        <table className="min-w-full table-auto">
-                            <thead>
-                                <tr>
-                                    <th className="border px-4 py-2">ID</th>
-                                    <th className="border px-4 py-2">Name</th>
-                                    <th className="border px-4 py-2">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {categories.length > 0 ? (
-                                    categories.map((category) => (
-                                        <tr key={category.id}>
-                                            <td className="border px-4 py-2">{category.id}</td>
-                                            <td className="border px-4 py-2">{category.name}</td>
-                                            <td className="border px-4 py-2">
-                                                <Button onClick={() => Inertia.visit(`/dashboard/categories/${category.id}/edit`)} className="mr-2">
-                                                    Edit
-                                                </Button>
-                                                <Button onClick={() => handleDelete(category.id)} variant="destructive">
-                                                    Delete
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={3} className="py-4 text-center">
-                                            No categories found.
+        <AppLayout breadcrumbs={categoriesBreadcrumbs}>
+            <Head title="Categories" />
+            <div className="container mx-auto p-4">
+                <h1 className="text-2xl font-bold">Categories</h1>
+                <Button onClick={() => Inertia.visit('/dashboard/categories/create')} className="my-4">
+                    Add New Category
+                </Button>
+                <div className="overflow-hidden rounded-xl border">
+                    <table className="min-w-full table-auto">
+                        <thead>
+                            <tr>
+                                <th className="border px-4 py-2">ID</th>
+                                <th className="border px-4 py-2">Name</th>
+                                <th className="border px-4 py-2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {categories.length > 0 ? (
+                                categories.map((category) => (
+                                    <tr key={category.id}>
+                                        <td className="border px-4 py-2">{category.id}</td>
+                                        <td className="border px-4 py-2">{category.name}</td>
+                                        <td className="border px-4 py-2">
+                                            <Button onClick={() => Inertia.visit(`/dashboard/categories/${category.id}/edit`)} className="mr-2">
+                                                Edit
+                                            </Button>
+                                            <Button onClick={() => handleDelete(category.id)} variant="destructive">
+                                                Delete
+                                            </Button>
                                         </td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={3} className="py-4 text-center">
+                                        No categories found.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </AppLayout>

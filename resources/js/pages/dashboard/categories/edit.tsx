@@ -3,9 +3,11 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import AppLayout from '@/layouts/app-layout';
 import { Inertia } from '@inertiajs/inertia';
 import { Head } from '@inertiajs/react';
 import React, { useState } from 'react';
+import { categoriesBreadcrumbs } from '.';
 
 interface Props {
     category: {
@@ -29,7 +31,7 @@ const EditCategory = ({ category }: Props) => {
     };
 
     return (
-        <>
+        <AppLayout breadcrumbs={[...categoriesBreadcrumbs, { title: 'Edit Category', href: `/dashboard/categories/${category.id}/edit` }]}>
             <Head title="Edit Category" />
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold">Edit Category</h1>
@@ -51,7 +53,7 @@ const EditCategory = ({ category }: Props) => {
                     <Button type="submit">Update Category</Button>
                 </form>
             </div>
-        </>
+        </AppLayout>
     );
 };
 

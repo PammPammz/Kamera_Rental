@@ -3,9 +3,11 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import AppLayout from '@/layouts/app-layout';
 import { Inertia } from '@inertiajs/inertia';
 import { Head } from '@inertiajs/react';
 import React, { useState } from 'react';
+import { categoriesBreadcrumbs } from '.';
 
 const CreateCategory = () => {
     const [name, setName] = useState('');
@@ -21,7 +23,7 @@ const CreateCategory = () => {
     };
 
     return (
-        <>
+        <AppLayout breadcrumbs={[...categoriesBreadcrumbs, { title: 'Create Category', href: '/dashboard/categories/create' }]}>
             <Head title="Create Category" />
             <div className="container mx-auto p-4">
                 <h1 className="text-2xl font-bold">Create Category</h1>
@@ -43,7 +45,7 @@ const CreateCategory = () => {
                     <Button type="submit">Create Category</Button>
                 </form>
             </div>
-        </>
+        </AppLayout>
     );
 };
 

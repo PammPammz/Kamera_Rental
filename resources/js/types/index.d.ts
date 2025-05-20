@@ -47,3 +47,16 @@ export interface Category {
     name: string;
     description: string | null;
 }
+
+export interface Equipment {
+    id: number;
+    name: string;
+    description?: string | null;
+    stock: number;
+    status: 'active' | 'inactive';
+    slug?: string;
+    category_id?: number | null;
+    category?: Category | null;
+    created_at?: string;
+    updated_at?: string;
+}
