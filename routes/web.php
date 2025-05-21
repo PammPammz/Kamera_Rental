@@ -6,11 +6,15 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
 
 
-Route::get('/', function () {
+Route::get('/welcome', function () {
     return Inertia::render('welcome');
+})->name('welcome');
+
+Route::get('/', function () {
+    return Inertia::render('home/index');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('dashboard/index');
     })->name('dashboard');
