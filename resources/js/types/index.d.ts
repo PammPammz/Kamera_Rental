@@ -45,6 +45,7 @@ export interface User {
 export interface Category {
     id: number;
     name: string;
+    slug: string;
     description: string | null;
 }
 
@@ -57,6 +58,22 @@ export interface Equipment {
     slug?: string;
     category_id?: number | null;
     category?: Category | null;
+    image?: string | null;
+    price?: number | null;
     created_at?: string;
     updated_at?: string;
+}
+export interface PaginatedData<T> {
+    data: T[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
+    next_page_url: string | null;
+    prev_page_url: string | null;
+    first_page_url: string;
+    last_page_url: string;
+    path: string;
 }

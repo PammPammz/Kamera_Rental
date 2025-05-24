@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Inertia } from '@inertiajs/inertia';
 
 export default function HeroSection() {
     return (
@@ -13,7 +14,9 @@ export default function HeroSection() {
                             </p>
                         </div>
                         <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                            <Button size="lg">Browse Cameras</Button>
+                            <Button size="lg" onClick={() => Inertia.visit('/camera-equipments')}>
+                                Browse Cameras
+                            </Button>
                             <Button variant="outline" size="lg">
                                 Learn More
                             </Button>

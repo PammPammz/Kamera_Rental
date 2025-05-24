@@ -83,4 +83,24 @@ class EquipmentController extends Controller
         return redirect()->route('dashboard.equipments.index')
             ->with('message', 'Equipment deleted successfully.');
     }
+
+    public function publicIndex()
+    {
+        $equipments = Equipment::with('category')
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($equipment) {
+                return [
+                    'id' => $equipment->id,
+                    'name' => $equipment->name,
+                    'description' => $equipment->description,
+                    'price' => $equipment->price,
+                    'image' => $equipment->image,
+                    'category' => $equipment->category?->name,
+                    'slug' => $equipment->slug,
+                ];
+            });
+
+        return response()->json($equipments);
+    }
 }

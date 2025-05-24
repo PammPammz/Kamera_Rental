@@ -4,15 +4,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
-
+use App\Http\Controllers\PublicEquipmentController;
 
 Route::get('/welcome', function () {
     return Inertia::render('welcome');
 })->name('welcome');
 
-Route::get('/', function () {
-    return Inertia::render('home/index');
-})->name('home');
+Route::get('/', [PublicEquipmentController::class, 'home'])->name('home');
+Route::get('/camera-equipments', [PublicEquipmentController::class, 'index'])->name('equipments.index');
 
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
