@@ -16,6 +16,8 @@ class Equipment extends Model
         'stock',
         'status',
         'category_id',
+        'image',
+        'price'
     ];
 
     protected static function booted()

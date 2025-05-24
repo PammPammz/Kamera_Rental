@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -27,6 +28,8 @@ class CategoryController extends Controller
             'description' => 'nullable|string',
         ]);
 
+        $validated['slug'] = Str::slug($validated['name']);
+
         Category::create($validated);
 
         return redirect()->route('dashboard.categories.index')->with('message', 'Category created.');
@@ -45,6 +48,8 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'description' => 'nullable|string',
         ]);
+
+        $validated['slug'] = Str::slug($validated['name']);
 
         $category->update($validated);
 
