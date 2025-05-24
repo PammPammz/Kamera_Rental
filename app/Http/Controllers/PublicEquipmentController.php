@@ -55,5 +55,20 @@ class PublicEquipmentController extends Controller
             'selectedCategory' => $request->category ?? 'all',
         ]);
     }
+
+    public function show(Equipment $equipment)
+    {
+        return Inertia::render('equipment-detail/index', [
+            'equipment' => [
+                'id' => $equipment->id,
+                'name' => $equipment->name,
+                'slug' => $equipment->slug,
+                'description' => $equipment->description,
+                'price' => $equipment->price,
+                'image' => $equipment->image,
+                'category' => $equipment->category,
+            ],
+        ]);
+    }
 }
 

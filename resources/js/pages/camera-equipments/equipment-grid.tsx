@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatRupiah } from '@/lib/utils';
 import { Equipment } from '@/types';
+import { Inertia } from '@inertiajs/inertia';
 import { Link } from '@inertiajs/react';
 
 const EquipmentGrid = ({ equipments }: { equipments: Equipment[] }) => (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {equipments.map((equipment) => (
-            <Link href={`/cameras/${equipment.id}`} key={equipment.id} className="group">
+            <Link href={`/camera-equipments/${equipment.slug}`} key={equipment.slug} className="group">
                 <Card className="overflow-hidden py-0 transition-all hover:shadow-md">
                     <CardHeader className="p-0">
                         <div className="relative aspect-[4/3] overflow-hidden">
@@ -28,7 +29,7 @@ const EquipmentGrid = ({ equipments }: { equipments: Equipment[] }) => (
                         <div className="font-bold">
                             {formatRupiah(equipment.price as number)} <span className="text-muted-foreground text-sm font-normal">/day</span>
                         </div>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={() => Inertia.visit(`/camera-equipments/${equipment.slug}`)}>
                             View Details
                         </Button>
                     </CardFooter>

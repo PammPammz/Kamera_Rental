@@ -12,6 +12,7 @@ Route::get('/welcome', function () {
 
 Route::get('/', [PublicEquipmentController::class, 'home'])->name('home');
 Route::get('/camera-equipments', [PublicEquipmentController::class, 'index'])->name('equipments.index');
+Route::get('/camera-equipments/{equipment:slug}', [PublicEquipmentController::class, 'show'])->name('equipments.show');
 
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
