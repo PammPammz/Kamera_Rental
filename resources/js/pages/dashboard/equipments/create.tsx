@@ -24,8 +24,6 @@ const CreateEquipment = ({ categories, errors }: Props) => {
         category_id: '',
     });
 
-    console.log('ooooooooo', categories);
-
     const handleChange = (field: string, value: unknown) => {
         setForm((prev) => ({
             ...prev,

@@ -77,3 +77,16 @@ export interface PaginatedData<T> {
     last_page_url: string;
     path: string;
 }
+
+export type CartItem = {
+    id: number;
+    equipment_id: number;
+    quantity: number;
+    equipment: {
+        id: number;
+        name: string;
+        category: Category;
+        image: string;
+        price: number;
+    };
+};

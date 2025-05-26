@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Models\Category;
+use App\Models\CartItem;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class PublicEquipmentController extends Controller
 {
@@ -58,6 +59,14 @@ class PublicEquipmentController extends Controller
 
     public function show(Equipment $equipment)
     {
+        $inCart = false;
+
+        if (Auth::id()) {
+            $inCart = CartItem::where('user_id', Auth::id())
+                ->where('equipment_id', $equipment->id)
+                ->exists();
+        }
+
         return Inertia::render('equipment-detail/index', [
             'equipment' => [
                 'id' => $equipment->id,
@@ -68,6 +77,7 @@ class PublicEquipmentController extends Controller
                 'image' => $equipment->image,
                 'category' => $equipment->category,
             ],
+            'inCart' => $inCart
         ]);
     }
 }

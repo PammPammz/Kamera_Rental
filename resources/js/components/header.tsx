@@ -3,7 +3,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { type InertiaPageProps } from '@/types/inertia';
 import { Inertia } from '@inertiajs/inertia';
 import { Link, usePage } from '@inertiajs/react';
-import { Camera, LogOut, User } from 'lucide-react';
+import { Camera, LogOut, ShoppingCart, User } from 'lucide-react';
+import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 
 export default function Header() {
@@ -36,6 +37,13 @@ export default function Header() {
                 <div className="flex items-center gap-4">
                     {user ? (
                         <DropdownMenu>
+                            <Button variant="ghost" size="sm" onClick={() => Inertia.visit('/cart')} className="relative">
+                                <ShoppingCart className="h-5 w-5" />
+                                <Badge className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs">
+                                    {props.cartCount}
+                                </Badge>
+                                <span className="sr-only">Cart</span>
+                            </Button>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="flex items-center gap-3">
                                     <Avatar className="h-6 w-6">

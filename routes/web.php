@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\PublicEquipmentController;
+use App\Http\Controllers\CartItemController;
 
 Route::get('/welcome', function () {
     return Inertia::render('welcome');
@@ -13,6 +14,14 @@ Route::get('/welcome', function () {
 Route::get('/', [PublicEquipmentController::class, 'home'])->name('home');
 Route::get('/camera-equipments', [PublicEquipmentController::class, 'index'])->name('equipments.index');
 Route::get('/camera-equipments/{equipment:slug}', [PublicEquipmentController::class, 'show'])->name('equipments.show');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cart', [CartItemController::class, 'index']);
+    Route::post('/cart', [CartItemController::class, 'store']);
+    Route::patch('/cart/{equipment:id}', [CartItemController::class, 'update']);
+    Route::delete('/cart/{equipment:id}', [CartItemController::class, 'destroy']);
+});
+
 
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/dashboard', function () {

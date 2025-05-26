@@ -10,5 +10,6 @@ export interface InertiaPageProps {
     auth: {
         user: User | null;
     };
+    cartCount: number;
     [key: string]: unknown;
 }
