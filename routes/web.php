@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\PublicEquipmentController;
 use App\Http\Controllers\CartItemController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/welcome', function () {
     return Inertia::render('welcome');
@@ -20,6 +21,24 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cart', [CartItemController::class, 'store']);
     Route::patch('/cart/{equipment:id}', [CartItemController::class, 'update']);
     Route::delete('/cart/{equipment:id}', [CartItemController::class, 'destroy']);
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkout', function () {
+        return inertia('checkout/index', [
+            'cartItems' => \App\Models\CartItem::with('equipment.category')
+                ->where('user_id', Auth::id())
+                ->get()
+                ->map(fn ($item) => [
+                    'id' => $item->equipment->id,
+                    'name' => $item->equipment->name,
+                    'category' => $item->equipment->category->name ?? '-',
+                    'price' => $item->equipment->price,
+                    'quantity' => $item->quantity,
+                    'image' => $item->equipment->image_url ?? '/placeholder.svg',
+                ]),
+        ]);
+    });
 });
 
 
