@@ -23,6 +23,11 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard/categories',
         icon: null,
     },
+    {
+        title: 'Orders',
+        href: '/dashboard/orders',
+        icon: null,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

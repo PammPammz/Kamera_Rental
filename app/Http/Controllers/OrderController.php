@@ -8,6 +8,7 @@ use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -81,5 +82,61 @@ class OrderController extends Controller
             DB::rollBack();
             return back()->withErrors(['error' => 'Something went wrong. Please try again.']);
         }
+    }
+
+    public function index()
+    {
+        $orders = Order::with('items.equipment', 'user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        $orders->getCollection()->transform(function ($order) {
+            return [
+                'id' => $order->id,
+                'full_name' => $order->full_name,
+                'phone' => $order->phone,
+                'address' => $order->address,
+                'purpose' => $order->purpose,
+                'delivery_method' => $order->delivery_method,
+                'notes' => $order->notes,
+                'rental_start' => $order->rental_start,
+                'rental_end' => $order->rental_end,
+                'subtotal' => $order->subtotal,
+                'orderItems' => $order->items->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'quantity' => $item->quantity,
+                        'equipment' => [
+                            'id' => $item->equipment->id,
+                            'name' => $item->equipment->name,
+                        ],
+                    ];
+                }),
+                'status' => $order->status, // if you have status field
+            ];
+        });
+       
+
+        return Inertia::render('dashboard/orders/index', [
+            'orders' => $orders
+        ]);
+    }
+
+    public function update(Request $request, Order $order)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,approved,rejected',
+            'transaction_proof' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('transaction_proof')) {
+            $path = $request->file('transaction_proof')->store('transaction_proofs', 'public');
+            $order->transaction_proof = $path;
+        }
+
+        $order->status = $validated['status'];
+        $order->save();
+
+        return redirect()->back()->with('success', 'Order updated');
     }
 }
