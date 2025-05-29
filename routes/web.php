@@ -6,7 +6,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\PublicEquipmentController;
 use App\Http\Controllers\CartItemController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/welcome', function () {
     return Inertia::render('welcome');
@@ -24,21 +25,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/checkout', function () {
-        return inertia('checkout/index', [
-            'cartItems' => \App\Models\CartItem::with('equipment.category')
-                ->where('user_id', Auth::id())
-                ->get()
-                ->map(fn ($item) => [
-                    'id' => $item->equipment->id,
-                    'name' => $item->equipment->name,
-                    'category' => $item->equipment->category->name ?? '-',
-                    'price' => $item->equipment->price,
-                    'quantity' => $item->quantity,
-                    'image' => $item->equipment->image_url ?? '/placeholder.svg',
-                ]),
-        ]);
-    });
+    Route::get('/checkout', [CheckoutController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
 });
 
 
