@@ -8,6 +8,7 @@ use App\Http\Controllers\PublicEquipmentController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserOrderController;
 
 Route::get('/welcome', function () {
     return Inertia::render('welcome');
@@ -27,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
 });
 
 
