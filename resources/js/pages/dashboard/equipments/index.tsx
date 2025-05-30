@@ -4,6 +4,8 @@ import { BreadcrumbItem, Equipment } from '@/types';
 import { Inertia } from '@inertiajs/inertia';
 import { Head } from '@inertiajs/react';
 
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
 interface Props {
     equipments: Equipment[];
 }
@@ -35,37 +37,48 @@ export default function EquipmentIndex({ equipments }: Props) {
                     Add New Equipment
                 </Button>
 
-                <table className="mt-4 min-w-full table-auto border-collapse border border-gray-300">
-                    <thead>
-                        <tr>
-                            <th className="border px-4 py-2">ID</th>
-                            <th className="border px-4 py-2">Name</th>
-                            <th className="border px-4 py-2">Category</th>
-                            <th className="border px-4 py-2">Stock</th>
-                            <th className="border px-4 py-2">Status</th>
-                            <th className="border px-4 py-2">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {equipments.map((equipment) => (
-                            <tr key={equipment.id}>
-                                <td className="border px-4 py-2">{equipment.id}</td>
-                                <td className="border px-4 py-2">{equipment.name}</td>
-                                <td className="border px-4 py-2">{equipment.category?.name || '-'}</td>
-                                <td className="border px-4 py-2">{equipment.stock}</td>
-                                <td className="border px-4 py-2 capitalize">{equipment.status}</td>
-                                <td className="border px-4 py-2">
-                                    <Button onClick={() => Inertia.visit(`/dashboard/equipments/${equipment.id}/edit`)} className="mr-2">
-                                        Edit
-                                    </Button>
-                                    <Button onClick={() => handleDelete(equipment.id)} variant="destructive">
-                                        Delete
-                                    </Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <div className="overflow-hidden rounded-xl border">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>ID</TableHead>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Category</TableHead>
+                                <TableHead>Stock</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
+                            {equipments.length > 0 ? (
+                                equipments.map((equipment) => (
+                                    <TableRow key={equipment.id}>
+                                        <TableCell>{equipment.id}</TableCell>
+                                        <TableCell>{equipment.name}</TableCell>
+                                        <TableCell>{equipment.category?.name || '-'}</TableCell>
+                                        <TableCell>{equipment.stock}</TableCell>
+                                        <TableCell className="capitalize">{equipment.status}</TableCell>
+                                        <TableCell>
+                                            <Button onClick={() => Inertia.visit(`/dashboard/equipments/${equipment.id}/edit`)} className="mr-2">
+                                                Edit
+                                            </Button>
+                                            <Button onClick={() => handleDelete(equipment.id)} variant="destructive">
+                                                Delete
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="py-4 text-center">
+                                        No equipments found.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
         </AppLayout>
     );

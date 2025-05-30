@@ -90,3 +90,33 @@ export type CartItem = {
         price: number;
     };
 };
+
+export interface OrderItem {
+    id: number;
+    equipment: Equipment;
+    quantity: number;
+    price: number;
+    total: number;
+}
+
+export interface Order {
+    id: number;
+    full_name: string;
+    email: string;
+    phone: string;
+    address: string;
+    purpose: string;
+    notes?: string;
+    delivery_method: 'pickup' | 'delivery';
+    delivery_fee: number;
+    rental_start: string; // ISO date
+    rental_end: string; // ISO date
+    status: 'pending' | 'approved' | 'cancelled';
+    proof_image_url?: string;
+    subtotal: number;
+    total: number;
+    created_at: string;
+    updated_at: string;
+
+    orderItems?: OrderItem[]; // optional, for when including items
+}

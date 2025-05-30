@@ -4,6 +4,8 @@ import { Category, type BreadcrumbItem } from '@/types';
 import { Inertia } from '@inertiajs/inertia';
 import { Head } from '@inertiajs/react';
 
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
 export const categoriesBreadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -34,40 +36,42 @@ const CategoryIndex = ({ categories }: Props) => {
                 <Button onClick={() => Inertia.visit('/dashboard/categories/create')} className="my-4">
                     Add New Category
                 </Button>
+
                 <div className="overflow-hidden rounded-xl border">
-                    <table className="min-w-full table-auto">
-                        <thead>
-                            <tr>
-                                <th className="border px-4 py-2">ID</th>
-                                <th className="border px-4 py-2">Name</th>
-                                <th className="border px-4 py-2">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>ID</TableHead>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
                             {categories.length > 0 ? (
                                 categories.map((category) => (
-                                    <tr key={category.id}>
-                                        <td className="border px-4 py-2">{category.id}</td>
-                                        <td className="border px-4 py-2">{category.name}</td>
-                                        <td className="border px-4 py-2">
+                                    <TableRow key={category.id}>
+                                        <TableCell>{category.id}</TableCell>
+                                        <TableCell>{category.name}</TableCell>
+                                        <TableCell>
                                             <Button onClick={() => Inertia.visit(`/dashboard/categories/${category.id}/edit`)} className="mr-2">
                                                 Edit
                                             </Button>
                                             <Button onClick={() => handleDelete(category.id)} variant="destructive">
                                                 Delete
                                             </Button>
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 ))
                             ) : (
-                                <tr>
-                                    <td colSpan={3} className="py-4 text-center">
+                                <TableRow>
+                                    <TableCell colSpan={3} className="py-4 text-center">
                                         No categories found.
-                                    </td>
-                                </tr>
+                                    </TableCell>
+                                </TableRow>
                             )}
-                        </tbody>
-                    </table>
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
         </AppLayout>
