@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'finished'])->default('pending');
             $table->string('transaction_proof')->nullable(); // store image path
         });
     }

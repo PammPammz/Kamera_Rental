@@ -28,7 +28,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
-    Route::get('/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
+    Route::get('/profile/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
 });
 
 

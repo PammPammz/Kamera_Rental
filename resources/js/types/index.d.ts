@@ -111,12 +111,11 @@ export interface Order {
     delivery_fee: number;
     rental_start: string; // ISO date
     rental_end: string; // ISO date
-    status: 'pending' | 'approved' | 'cancelled';
+    status: 'pending' | 'approved' | 'rejected' | 'finished';
     proof_image_url?: string;
     subtotal: number;
     total: number;
     created_at: string;
     updated_at: string;
-
-    orderItems?: OrderItem[]; // optional, for when including items
+    items?: OrderItem[];
 }

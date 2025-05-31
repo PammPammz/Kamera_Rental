@@ -1,13 +1,15 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader } from '@/components/ui/card';
+import { formatRupiah } from '@/lib/utils';
+import { Order } from '@/types';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { getStatusBadgeClasses, MockOrder } from '.';
+import { getStatusBadgeClasses } from '.';
 import { ExpandedOrderContent } from './expanded-order-content';
 
 interface Props {
-    order: MockOrder;
+    order: Order;
     isExpanded: boolean;
-    toggleOrderExpand: (id: string) => void;
+    toggleOrderExpand: (id: number) => void;
 }
 
 export default function OrderCard({ order, isExpanded, toggleOrderExpand }: Props) {
@@ -23,14 +25,14 @@ export default function OrderCard({ order, isExpanded, toggleOrderExpand }: Prop
                         )}
                         <div>
                             <div className="font-medium">Order #{order.id}</div>
-                            <div className="text-muted-foreground text-sm">Placed on {new Date(order.orderDate).toLocaleDateString()}</div>
+                            <div className="text-muted-foreground text-sm">Placed on {new Date(order.created_at).toLocaleDateString()}</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
                         <Badge className={getStatusBadgeClasses(order.status)}>{order.status}</Badge>
                         <div className="text-right">
-                            <div className="font-medium">${order.total.toFixed(2)}</div>
-                            <div className="text-muted-foreground text-sm">{order.items.length} items</div>
+                            <div className="font-medium">{formatRupiah(order.total)}</div>
+                            <div className="text-muted-foreground text-sm">{order.items?.length} items</div>
                         </div>
                     </div>
                 </div>
