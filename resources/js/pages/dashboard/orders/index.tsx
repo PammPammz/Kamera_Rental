@@ -1,14 +1,11 @@
+'use client';
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Order, PaginatedData } from '@/types';
-import { Inertia } from '@inertiajs/inertia';
-import { Head } from '@inertiajs/react';
-
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { formatRupiah } from '@/lib/utils';
-
-interface Props {
-    orders: PaginatedData<Order>;
-}
+import { usePage } from '@inertiajs/react';
+import { useState } from 'react';
+import OrderCard from './order-card';
 
 export const ordersBreadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,110 +14,115 @@ export const ordersBreadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Orders',
-        href: '/dashboard/orders',
+        href: '/orders',
     },
 ];
 
-export default function OrderIndex({ orders }: Props) {
-    const handleApprove = (id: number) => {
-        if (confirm('Approve this order?')) {
-            Inertia.put(`/dashboard/orders/${id}`, { status: 'approved' });
+export const getStatusBadgeClasses = (status: string) => {
+    switch (status) {
+        case 'Pending':
+            return 'bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800';
+        case 'Approved':
+            return 'bg-blue-100 text-blue-800 hover:bg-blue-100 hover:text-blue-800';
+        case 'Finished':
+            return 'bg-gray-100 text-gray-800 hover:bg-gray-100 hover:text-gray-800';
+        default:
+            return 'bg-red-100 text-red-800 hover:bg-red-100 hover:text-red-800';
+    }
+};
+
+export default function OrdersPage() {
+    const { orders } = usePage<{ orders: PaginatedData<Order> }>().props;
+    const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
+
+    const toggleOrderExpand = (orderId: number) => {
+        if (expandedOrder === orderId) {
+            setExpandedOrder(null);
+        } else {
+            setExpandedOrder(orderId);
         }
     };
 
-    console.log('orders', orders.data[0].orderItems);
-
     return (
         <AppLayout breadcrumbs={ordersBreadcrumbs}>
-            <Head title="Orders" />
-            <div className="container mx-auto p-4">
-                <h1 className="text-2xl font-bold">Orders</h1>
+            <div className="container mx-auto py-8">
+                <div className="flex flex-col gap-8 md:flex-row">
+                    {/* Main Content */}
+                    <div className="flex-1 space-y-6">
+                        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                            <div>
+                                <h1 className="text-2xl font-bold">Orders</h1>
+                            </div>
+                        </div>
 
-                <div className="mt-4 overflow-hidden rounded-xl border">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Order ID</TableHead>
-                                <TableHead>Full Name</TableHead>
-                                <TableHead>Phone</TableHead>
-                                <TableHead>Address</TableHead>
-                                <TableHead>Purpose</TableHead>
-                                <TableHead>Delivery Method</TableHead>
-                                <TableHead>Notes</TableHead>
-                                <TableHead>Rental Start</TableHead>
-                                <TableHead>Rental End</TableHead>
-                                <TableHead>Subtotal</TableHead>
-                                <TableHead>Equipments Requested</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-
-                        <TableBody>
-                            {orders.data.length > 0 ? (
-                                orders.data.map((order) => (
-                                    <TableRow key={order.id}>
-                                        <TableCell>{order.id}</TableCell>
-                                        <TableCell>{order.full_name}</TableCell>
-                                        <TableCell>{order.phone}</TableCell>
-                                        <TableCell>{order.address}</TableCell>
-                                        <TableCell>{order.purpose}</TableCell>
-                                        <TableCell>{order.delivery_method}</TableCell>
-                                        <TableCell>{order.notes}</TableCell>
-                                        <TableCell>{order.rental_start}</TableCell>
-                                        <TableCell>{order.rental_end}</TableCell>
-                                        <TableCell>{formatRupiah(order.subtotal)}</TableCell>
-                                        <TableCell>
-                                            <ul className="list-inside list-disc space-y-1">
-                                                {order.orderItems?.length ? (
-                                                    order.orderItems.map((item) => (
-                                                        <li key={item.id}>
-                                                            {item.equipment.name} (Qty: {item.quantity})
-                                                        </li>
-                                                    ))
-                                                ) : (
-                                                    <span>-</span>
-                                                )}
-                                            </ul>
-                                        </TableCell>
-                                        <TableCell className="capitalize">{order.status}</TableCell>
-                                        <TableCell>
-                                            <TableCell>
-                                                {order.status === 'pending' ? (
-                                                    <div className="flex gap-2">
-                                                        <button
-                                                            onClick={() => handleApprove(order.id)}
-                                                            className="rounded bg-green-600 px-3 py-1 text-white hover:bg-green-700"
-                                                        >
-                                                            Approve
-                                                        </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                if (confirm('Reject this order?')) {
-                                                                    Inertia.put(`/dashboard/orders/${order.id}`, { status: 'rejected' });
-                                                                }
-                                                            }}
-                                                            className="rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700"
-                                                        >
-                                                            Reject
-                                                        </button>
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-gray-500 italic">No actions</span>
-                                                )}
-                                            </TableCell>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={13} className="py-4 text-center">
-                                        No orders found.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                        <Tabs defaultValue="all" className="w-full">
+                            <TabsList className="mb-6 grid grid-cols-5">
+                                <TabsTrigger value="all">All</TabsTrigger>
+                                <TabsTrigger value="pending">Pending</TabsTrigger>
+                                <TabsTrigger value="approved">Approved</TabsTrigger>
+                                <TabsTrigger value="rejected">Rejected</TabsTrigger>
+                                <TabsTrigger value="finished">Finished</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="all" className="space-y-4">
+                                {orders.data.map((order) => (
+                                    <OrderCard
+                                        key={order.id}
+                                        order={order}
+                                        isExpanded={expandedOrder === order.id}
+                                        toggleOrderExpand={toggleOrderExpand}
+                                    />
+                                ))}
+                            </TabsContent>
+                            <TabsContent value="pending" className="space-y-4">
+                                {orders.data
+                                    .filter((order) => order.status === 'pending')
+                                    .map((order) => (
+                                        <OrderCard
+                                            key={order.id}
+                                            order={order}
+                                            isExpanded={expandedOrder === order.id}
+                                            toggleOrderExpand={toggleOrderExpand}
+                                        />
+                                    ))}
+                            </TabsContent>
+                            <TabsContent value="approved" className="space-y-4">
+                                {orders.data
+                                    .filter((order) => order.status === 'approved')
+                                    .map((order) => (
+                                        <OrderCard
+                                            key={order.id}
+                                            order={order}
+                                            isExpanded={expandedOrder === order.id}
+                                            toggleOrderExpand={toggleOrderExpand}
+                                        />
+                                    ))}
+                            </TabsContent>
+                            <TabsContent value="rejected" className="space-y-4">
+                                {orders.data
+                                    .filter((order) => order.status === 'rejected')
+                                    .map((order) => (
+                                        <OrderCard
+                                            key={order.id}
+                                            order={order}
+                                            isExpanded={expandedOrder === order.id}
+                                            toggleOrderExpand={toggleOrderExpand}
+                                        />
+                                    ))}
+                            </TabsContent>
+                            <TabsContent value="finished" className="space-y-4">
+                                {orders.data
+                                    .filter((order) => order.status === 'finished')
+                                    .map((order) => (
+                                        <OrderCard
+                                            key={order.id}
+                                            order={order}
+                                            isExpanded={expandedOrder === order.id}
+                                            toggleOrderExpand={toggleOrderExpand}
+                                        />
+                                    ))}
+                            </TabsContent>
+                        </Tabs>
+                    </div>
                 </div>
             </div>
         </AppLayout>

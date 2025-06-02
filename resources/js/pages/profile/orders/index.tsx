@@ -120,33 +120,3 @@ export default function OrdersPage() {
         </UserLayout>
     );
 }
-
-export interface MockOrderItem {
-    name: string;
-    category: string;
-    price: number;
-    quantity: number;
-    image: string;
-}
-
-export interface MockPaymentInfo {
-    cardType: string;
-    cardLast4: string;
-    billingName: string;
-}
-
-export interface MockOrder {
-    id: string;
-    orderDate: string; // ISO date string
-    status: 'Pending' | 'Finished' | 'Approved' | 'Finished';
-    total: number;
-    subtotal: number;
-    insurance: number;
-    delivery: number;
-    tax: number;
-    rentalStart: string; // ISO date string
-    rentalEnd: string; // ISO date string
-    deliveryMethod: 'Store Pickup' | 'Delivery';
-    items: MockOrderItem[];
-    paymentInfo: MockPaymentInfo;
-}

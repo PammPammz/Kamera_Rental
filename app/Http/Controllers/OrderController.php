@@ -90,33 +90,6 @@ class OrderController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        $orders->getCollection()->transform(function ($order) {
-            return [
-                'id' => $order->id,
-                'full_name' => $order->full_name,
-                'phone' => $order->phone,
-                'address' => $order->address,
-                'purpose' => $order->purpose,
-                'delivery_method' => $order->delivery_method,
-                'notes' => $order->notes,
-                'rental_start' => $order->rental_start,
-                'rental_end' => $order->rental_end,
-                'subtotal' => $order->subtotal,
-                'orderItems' => $order->items->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'quantity' => $item->quantity,
-                        'equipment' => [
-                            'id' => $item->equipment->id,
-                            'name' => $item->equipment->name,
-                        ],
-                    ];
-                }),
-                'status' => $order->status, // if you have status field
-            ];
-        });
-       
-
         return Inertia::render('dashboard/orders/index', [
             'orders' => $orders
         ]);

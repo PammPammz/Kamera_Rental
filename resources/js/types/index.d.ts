@@ -101,10 +101,7 @@ export interface OrderItem {
 
 export interface Order {
     id: number;
-    full_name: string;
-    email: string;
-    phone: string;
-    address: string;
+    user: User;
     purpose: string;
     notes?: string;
     delivery_method: 'pickup' | 'delivery';
