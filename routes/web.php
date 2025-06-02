@@ -40,7 +40,9 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('equipments', EquipmentController::class);
+
         Route::resource('orders', OrderController::class)->only(['index', 'show', 'update']);
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     });
 });
 

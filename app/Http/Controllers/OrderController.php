@@ -8,6 +8,7 @@ use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class OrderController extends Controller
@@ -111,5 +112,27 @@ class OrderController extends Controller
         $order->save();
 
         return redirect()->back()->with('success', 'Order updated');
+    }
+
+    public function updateStatus(Request $request, Order $order)
+    {
+        $request->validate([
+            'status' => ['required', Rule::in(['pending', 'approved', 'rejected', 'finished'])],
+        ]);
+
+        $newStatus = $request->status;
+
+        if ($order->status === 'rejected' && $newStatus === 'finished') {
+            return back()->withErrors(['status' => 'Cannot complete a rejected order.']);
+        }
+
+        if ($order->status === 'pending' && $newStatus === 'finished') {
+            return back()->withErrors(['status' => 'Approve the order first before completing.']);
+        }
+
+        $order->status = $newStatus;
+        $order->save();
+
+        return back()->with('success', 'Order status updated.');
     }
 }

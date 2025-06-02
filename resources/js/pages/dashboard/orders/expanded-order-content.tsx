@@ -1,7 +1,9 @@
-import { CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { calculateRentalDays, formatRupiah } from '@/lib/utils';
 import { Order } from '@/types';
+import { router } from '@inertiajs/react';
 
 // Order Items Component
 const OrderItems = ({ items }: { items: Order['items'] }) => (
@@ -62,6 +64,12 @@ const OrderSummary = ({ order }: { order: Order }) => (
 
 // Expanded Order Content Component
 export const ExpandedOrderContent = ({ order }: { order: Order }) => {
+    function handleStatusChange(id: number, status: 'approved' | 'rejected' | 'finished') {
+        if (!confirm(`Are you sure you want to ${status} this order?`)) return;
+
+        router.patch(`/dashboard/orders/${id}/status`, { status });
+    }
+
     return (
         <>
             <Separator />
@@ -95,6 +103,19 @@ export const ExpandedOrderContent = ({ order }: { order: Order }) => {
                 </div>
             </CardContent>
             <Separator />
+            {(order.status === 'pending' || order.status === 'approved') && (
+                <CardFooter className="flex justify-end gap-3">
+                    {order.status === 'pending' && (
+                        <>
+                            <Button onClick={() => handleStatusChange(order.id, 'rejected')} variant="destructive">
+                                Reject
+                            </Button>
+                            <Button onClick={() => handleStatusChange(order.id, 'approved')}>Approve</Button>{' '}
+                        </>
+                    )}
+                    {order.status === 'approved' && <Button onClick={() => handleStatusChange(order.id, 'finished')}>Finish Order</Button>}
+                </CardFooter>
+            )}
         </>
     );
 };
