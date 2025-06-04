@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\DiskHelper;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -90,6 +92,13 @@ class OrderController extends Controller
         $orders = Order::with('items.equipment', 'user')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+    
+        $orders->getCollection()->transform(function ($order) {
+            $order->transaction_proof_url = $order->transaction_proof
+                ? DiskHelper::getS3Disk()->temporaryUrl($order->transaction_proof, now()->addMinutes(60))
+                : null;
+            return $order;
+        });
 
         return Inertia::render('dashboard/orders/index', [
             'orders' => $orders
@@ -99,29 +108,17 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $validated = $request->validate([
-            'status' => 'required|in:pending,approved,rejected',
+            'status' => [
+                'required',
+                Rule::in(['pending', 'approved', 'rejected', 'finished']),
+            ],
             'transaction_proof' => 'nullable|image|max:2048',
+            'reject_reason' => 'nullable|string|max:1000',
         ]);
 
-        if ($request->hasFile('transaction_proof')) {
-            $path = $request->file('transaction_proof')->store('transaction_proofs', 'public');
-            $order->transaction_proof = $path;
-        }
+        $newStatus = $validated['status'];
 
-        $order->status = $validated['status'];
-        $order->save();
-
-        return redirect()->back()->with('success', 'Order updated');
-    }
-
-    public function updateStatus(Request $request, Order $order)
-    {
-        $request->validate([
-            'status' => ['required', Rule::in(['pending', 'approved', 'rejected', 'finished'])],
-        ]);
-
-        $newStatus = $request->status;
-
+        // Validation logic for transitions
         if ($order->status === 'rejected' && $newStatus === 'finished') {
             return back()->withErrors(['status' => 'Cannot complete a rejected order.']);
         }
@@ -130,9 +127,24 @@ class OrderController extends Controller
             return back()->withErrors(['status' => 'Approve the order first before completing.']);
         }
 
+        // Handle file upload to S3
+        if ($request->hasFile('transaction_proof')) {
+            $path = $request->file('transaction_proof')->store('transaction_proofs', 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $order->transaction_proof = $path;
+        }
+
         $order->status = $newStatus;
+
+        // Save reject reason if rejected
+        if ($newStatus === 'rejected') {
+            $order->reject_reason = $validated['reject_reason'] ?? null;
+        } else {
+            $order->reject_reason = null;
+        }
+
         $order->save();
 
-        return back()->with('success', 'Order status updated.');
+        return back()->with('success', 'Order updated successfully.');
     }
 }

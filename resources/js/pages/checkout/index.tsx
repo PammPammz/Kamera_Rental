@@ -54,7 +54,7 @@ export default function RentPage() {
 
     return (
         <UserLayout>
-            <div className="container mx-auto py-8">
+            <div className="container mx-auto p-8">
                 <Link href="/" className="mb-6 inline-flex items-center gap-1 text-sm font-medium hover:underline">
                     <ArrowLeft className="h-4 w-4" />
                     Back to cameras

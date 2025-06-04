@@ -1,9 +1,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader } from '@/components/ui/card';
 import { formatRupiah } from '@/lib/utils';
+import { getStatusBadgeVariant } from '@/pages/dashboard/orders';
 import { Order } from '@/types';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { getStatusBadgeClasses } from '.';
 import { ExpandedOrderContent } from './expanded-order-content';
 
 interface Props {
@@ -29,7 +29,7 @@ export default function OrderCard({ order, isExpanded, toggleOrderExpand }: Prop
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
-                        <Badge className={getStatusBadgeClasses(order.status)}>{order.status}</Badge>
+                        <Badge variant={getStatusBadgeVariant(order.status)}>{order.status}</Badge>
                         <div className="text-right">
                             <div className="font-medium">{formatRupiah(order.total)}</div>
                             <div className="text-muted-foreground text-sm">{order.items?.length} items</div>

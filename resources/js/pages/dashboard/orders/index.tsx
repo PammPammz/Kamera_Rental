@@ -1,5 +1,6 @@
 'use client';
 
+import { BadgeProps } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Order, PaginatedData } from '@/types';
@@ -18,16 +19,16 @@ export const ordersBreadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export const getStatusBadgeClasses = (status: string) => {
+export const getStatusBadgeVariant = (status: string): BadgeProps['variant'] => {
     switch (status) {
-        case 'Pending':
-            return 'bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800';
-        case 'Approved':
-            return 'bg-blue-100 text-blue-800 hover:bg-blue-100 hover:text-blue-800';
-        case 'Finished':
-            return 'bg-gray-100 text-gray-800 hover:bg-gray-100 hover:text-gray-800';
+        case 'pending':
+            return 'outline';
+        case 'approved':
+            return 'default';
+        case 'finished':
+            return 'secondary';
         default:
-            return 'bg-red-100 text-red-800 hover:bg-red-100 hover:text-red-800';
+            return 'destructive';
     }
 };
 
@@ -45,7 +46,7 @@ export default function OrdersPage() {
 
     return (
         <AppLayout breadcrumbs={ordersBreadcrumbs}>
-            <div className="container mx-auto py-8">
+            <div className="container mx-auto p-8">
                 <div className="flex flex-col gap-8 md:flex-row">
                     {/* Main Content */}
                     <div className="flex-1 space-y-6">

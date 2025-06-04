@@ -10,7 +10,7 @@ import { ArrowLeft } from 'lucide-react';
 export default function EquipmentDetail({ equipment, inCart }: Readonly<{ equipment: Equipment; inCart: boolean }>) {
     return (
         <UserLayout>
-            <div className="container mx-auto py-8">
+            <div className="container mx-auto p-8">
                 <button
                     type="button"
                     onClick={() => window.history.back()}

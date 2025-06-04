@@ -43,7 +43,7 @@ export default function CartPage() {
 
     return (
         <UserLayout>
-            <div className="container mx-auto py-8">
+            <div className="container mx-auto p-8">
                 <Link href="/camera-equipments" className="mb-6 inline-flex items-center gap-1 text-sm font-medium hover:underline">
                     <ArrowLeft className="h-4 w-4" />
                     Back to equipment list

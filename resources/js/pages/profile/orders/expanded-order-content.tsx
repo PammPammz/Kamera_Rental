@@ -1,4 +1,4 @@
-import { CardContent } from '@/components/ui/card';
+import { CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { calculateRentalDays, formatRupiah } from '@/lib/utils';
 import { Order } from '@/types';
@@ -60,6 +60,37 @@ const OrderSummary = ({ order }: { order: Order }) => (
     </div>
 );
 
+const OrderFooter = ({ order }: { order: Order }) => {
+    if (order.status !== 'approved' && order.status !== 'rejected') return null;
+
+    console.log('asdfasdfsadf', order.transaction_proof_url);
+
+    return (
+        <>
+            <Separator />
+            <CardFooter className="w-full">
+                {order.status === 'approved' && (
+                    <div className="flex w-full justify-between gap-6">
+                        {order.transaction_proof_url && (
+                            <div>
+                                <p>Proof of Payment:</p>
+                                <img src={order.transaction_proof_url} className="mt-2 w-48 rounded" />
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {order.status === 'rejected' && (
+                    <div>
+                        <p className="font-bold">Reject Reason:</p>
+                        <p>{order.reject_reason}</p>
+                    </div>
+                )}
+            </CardFooter>
+        </>
+    );
+};
+
 // Expanded Order Content Component
 export const ExpandedOrderContent = ({ order }: { order: Order }) => {
     return (
@@ -95,6 +126,7 @@ export const ExpandedOrderContent = ({ order }: { order: Order }) => {
                 </div>
             </CardContent>
             <Separator />
+            <OrderFooter order={order} />
         </>
     );
 };

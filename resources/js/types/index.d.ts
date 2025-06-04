@@ -109,7 +109,8 @@ export interface Order {
     rental_start: string; // ISO date
     rental_end: string; // ISO date
     status: 'pending' | 'approved' | 'rejected' | 'finished';
-    proof_image_url?: string;
+    transaction_proof_url?: string;
+    reject_reason?: string;
     subtotal: number;
     total: number;
     created_at: string;

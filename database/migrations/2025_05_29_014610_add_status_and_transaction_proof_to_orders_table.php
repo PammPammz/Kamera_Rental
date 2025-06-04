@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->enum('status', ['pending', 'approved', 'rejected', 'finished'])->default('pending');
-            $table->string('transaction_proof')->nullable(); // store image path
+            $table->string('transaction_proof')->nullable();
+            $table->text('reject_reason')->nullable();
         });
     }
 
@@ -23,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn(['status', 'transaction_proof']);
+            $table->dropColumn(['status', 'transaction_proof', 'reject_reason']);
         });
     }
 };

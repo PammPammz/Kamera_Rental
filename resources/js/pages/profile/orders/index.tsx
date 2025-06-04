@@ -8,19 +8,6 @@ import { useState } from 'react';
 import ProfileSidebar from '../profile-sidebar';
 import OrderCard from './order-card';
 
-export const getStatusBadgeClasses = (status: string) => {
-    switch (status) {
-        case 'Pending':
-            return 'bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800';
-        case 'Approved':
-            return 'bg-blue-100 text-blue-800 hover:bg-blue-100 hover:text-blue-800';
-        case 'Finished':
-            return 'bg-gray-100 text-gray-800 hover:bg-gray-100 hover:text-gray-800';
-        default:
-            return 'bg-red-100 text-red-800 hover:bg-red-100 hover:text-red-800';
-    }
-};
-
 export default function OrdersPage() {
     const { orders } = usePage<{ orders: PaginatedData<Order> }>().props;
     const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
@@ -35,7 +22,7 @@ export default function OrdersPage() {
 
     return (
         <UserLayout>
-            <div className="container mx-auto py-8">
+            <div className="container mx-auto p-8">
                 <div className="flex flex-col gap-8 md:flex-row">
                     <ProfileSidebar />
                     {/* Main Content */}

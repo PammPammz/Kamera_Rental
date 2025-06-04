@@ -1,9 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { CardContent, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 import { calculateRentalDays, formatRupiah } from '@/lib/utils';
 import { Order } from '@/types';
 import { router } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 // Order Items Component
 const OrderItems = ({ items }: { items: Order['items'] }) => (
@@ -62,14 +66,118 @@ const OrderSummary = ({ order }: { order: Order }) => (
     </div>
 );
 
+const OrderFooter = ({ order }: { order: Order }) => {
+    const [proofFile, setProofFile] = useState<File | null>(null);
+    const [rejectReason, setRejectReason] = useState<string>('');
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    const handleStatusChange = ({
+        orderId,
+        newStatus,
+        file,
+        rejectReason,
+    }: {
+        orderId: number;
+        newStatus: 'approved' | 'rejected' | 'finished';
+        file?: File | null;
+        rejectReason?: string;
+    }) => {
+        const formData = new FormData();
+        formData.append('status', newStatus);
+        formData.append('_method', 'PUT');
+
+        if (newStatus === 'approved' && file) {
+            formData.append('transaction_proof', file);
+        }
+
+        if (newStatus === 'rejected' && rejectReason) formData.append('reject_reason', rejectReason);
+
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
+        } else {
+            setPreviewUrl(null);
+        }
+
+        router.post(`/dashboard/orders/${orderId}`, formData, {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Optionally reset file input
+                setProofFile(null);
+            },
+            onError: (errors) => {
+                console.error(errors);
+                alert('Failed to update order');
+            },
+        });
+    };
+
+    useEffect(() => {
+        return () => {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
+
+    return (
+        <>
+            <Separator />
+            <CardFooter className="w-full">
+                {order.status === 'pending' && (
+                    <div className="flex w-full flex-col gap-3">
+                        <div className="flex flex-col gap-2">
+                            <Label>Proof of Payment</Label>
+                            <Input type="file" onChange={(e) => setProofFile(e.target.files?.[0] || null)} accept="image/*" />
+                            {previewUrl && <img src={previewUrl} className="mt-2 w-48 rounded" />}
+                        </div>
+
+                        <div>
+                            <Label>Rejection Reason</Label>
+                            <Textarea
+                                placeholder="Enter reason for rejection..."
+                                value={rejectReason}
+                                onChange={(e) => setRejectReason(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                            <Button
+                                onClick={() => handleStatusChange({ orderId: order.id, newStatus: 'rejected', rejectReason: rejectReason })}
+                                variant="destructive"
+                            >
+                                Reject
+                            </Button>
+                            <Button onClick={() => handleStatusChange({ orderId: order.id, newStatus: 'approved', file: proofFile })}>Approve</Button>
+                        </div>
+                    </div>
+                )}
+
+                {order.status === 'approved' && (
+                    <div className="flex w-full justify-between gap-6">
+                        {order.transaction_proof_url && (
+                            <div>
+                                <p>Proof of Payment:</p>
+                                <img src={order.transaction_proof_url} className="mt-2 w-48 rounded" />
+                            </div>
+                        )}
+                        <Button onClick={() => handleStatusChange({ orderId: order.id, newStatus: 'finished' })}>Finish Order</Button>
+                    </div>
+                )}
+
+                {order.status === 'rejected' && (
+                    <div>
+                        <p className="font-bold">Reject Reason:</p>
+                        <p>{order.reject_reason}</p>
+                    </div>
+                )}
+            </CardFooter>
+        </>
+    );
+};
+
 // Expanded Order Content Component
 export const ExpandedOrderContent = ({ order }: { order: Order }) => {
-    function handleStatusChange(id: number, status: 'approved' | 'rejected' | 'finished') {
-        if (!confirm(`Are you sure you want to ${status} this order?`)) return;
-
-        router.patch(`/dashboard/orders/${id}/status`, { status });
-    }
-
     return (
         <>
             <Separator />
@@ -102,20 +210,7 @@ export const ExpandedOrderContent = ({ order }: { order: Order }) => {
                     </div>
                 </div>
             </CardContent>
-            <Separator />
-            {(order.status === 'pending' || order.status === 'approved') && (
-                <CardFooter className="flex justify-end gap-3">
-                    {order.status === 'pending' && (
-                        <>
-                            <Button onClick={() => handleStatusChange(order.id, 'rejected')} variant="destructive">
-                                Reject
-                            </Button>
-                            <Button onClick={() => handleStatusChange(order.id, 'approved')}>Approve</Button>{' '}
-                        </>
-                    )}
-                    {order.status === 'approved' && <Button onClick={() => handleStatusChange(order.id, 'finished')}>Finish Order</Button>}
-                </CardFooter>
-            )}
+            <OrderFooter order={order} />
         </>
     );
 };
