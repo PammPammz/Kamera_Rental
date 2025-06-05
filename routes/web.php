@@ -6,6 +6,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\PublicEquipmentController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserOrderController;
 
 Route::get('/welcome', function () {
     return Inertia::render('welcome');
@@ -22,6 +25,12 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/cart/{equipment:id}', [CartItemController::class, 'destroy']);
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/profile/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
+});
+
 
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
@@ -31,6 +40,8 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('equipments', EquipmentController::class);
+
+        Route::resource('orders', OrderController::class)->only(['index', 'show', 'update']);
     });
 });
 
