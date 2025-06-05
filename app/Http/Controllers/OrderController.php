@@ -84,11 +84,17 @@ class OrderController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('items.equipment', 'user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $status = $request->get('status', 'all');
+
+        $query = Order::with('items.equipment.category', 'user');
+
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->paginate(10);
     
         $orders->getCollection()->transform(function ($order) {
             $order->transaction_proof_url = $order->transaction_proof
@@ -98,7 +104,8 @@ class OrderController extends Controller
         });
 
         return Inertia::render('dashboard/orders/index', [
-            'orders' => $orders
+            'orders' => $orders,
+            'status' => $status
         ]);
     }
 

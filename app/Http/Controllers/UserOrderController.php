@@ -11,8 +11,15 @@ class UserOrderController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = Order::with('items.equipment')
-            ->where('user_id', $request->user()->id)
+        $status = $request->get('status', 'all');
+
+        $query = Order::with('items.equipment.category', 'user')->where('user_id', $request->user()->id);
+
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $orders = $query
             ->latest()
             ->paginate(10);
 
@@ -25,6 +32,7 @@ class UserOrderController extends Controller
 
         return Inertia::render('profile/orders/index', [
             'orders' => $orders,
+            'status' => $status
         ]);
     }
 }

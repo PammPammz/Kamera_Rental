@@ -4,6 +4,7 @@ import { BadgeProps } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Order, PaginatedData } from '@/types';
+import { Inertia } from '@inertiajs/inertia';
 import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import OrderCard from './order-card';
@@ -33,8 +34,17 @@ export const getStatusBadgeVariant = (status: string): BadgeProps['variant'] => 
 };
 
 export default function OrdersPage() {
-    const { orders } = usePage<{ orders: PaginatedData<Order> }>().props;
+    const { orders, status } = usePage<{ orders: PaginatedData<Order>; status: string }>().props;
     const [expandedOrder, setExpandedOrder] = useState<number | null>(null);
+
+    const handleTabChange = (value: string) => {
+        Inertia.visit(`/dashboard/orders`, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['orders', 'selectedStatus'],
+            data: { status: value },
+        });
+    };
 
     const toggleOrderExpand = (orderId: number) => {
         if (expandedOrder === orderId) {
@@ -56,7 +66,7 @@ export default function OrdersPage() {
                             </div>
                         </div>
 
-                        <Tabs defaultValue="all" className="w-full">
+                        <Tabs value={status} onValueChange={handleTabChange} className="w-full">
                             <TabsList className="mb-6 grid grid-cols-5">
                                 <TabsTrigger value="all">All</TabsTrigger>
                                 <TabsTrigger value="pending">Pending</TabsTrigger>
@@ -75,52 +85,44 @@ export default function OrdersPage() {
                                 ))}
                             </TabsContent>
                             <TabsContent value="pending" className="space-y-4">
-                                {orders.data
-                                    .filter((order) => order.status === 'pending')
-                                    .map((order) => (
-                                        <OrderCard
-                                            key={order.id}
-                                            order={order}
-                                            isExpanded={expandedOrder === order.id}
-                                            toggleOrderExpand={toggleOrderExpand}
-                                        />
-                                    ))}
+                                {orders.data.map((order) => (
+                                    <OrderCard
+                                        key={order.id}
+                                        order={order}
+                                        isExpanded={expandedOrder === order.id}
+                                        toggleOrderExpand={toggleOrderExpand}
+                                    />
+                                ))}
                             </TabsContent>
                             <TabsContent value="approved" className="space-y-4">
-                                {orders.data
-                                    .filter((order) => order.status === 'approved')
-                                    .map((order) => (
-                                        <OrderCard
-                                            key={order.id}
-                                            order={order}
-                                            isExpanded={expandedOrder === order.id}
-                                            toggleOrderExpand={toggleOrderExpand}
-                                        />
-                                    ))}
+                                {orders.data.map((order) => (
+                                    <OrderCard
+                                        key={order.id}
+                                        order={order}
+                                        isExpanded={expandedOrder === order.id}
+                                        toggleOrderExpand={toggleOrderExpand}
+                                    />
+                                ))}
                             </TabsContent>
                             <TabsContent value="rejected" className="space-y-4">
-                                {orders.data
-                                    .filter((order) => order.status === 'rejected')
-                                    .map((order) => (
-                                        <OrderCard
-                                            key={order.id}
-                                            order={order}
-                                            isExpanded={expandedOrder === order.id}
-                                            toggleOrderExpand={toggleOrderExpand}
-                                        />
-                                    ))}
+                                {orders.data.map((order) => (
+                                    <OrderCard
+                                        key={order.id}
+                                        order={order}
+                                        isExpanded={expandedOrder === order.id}
+                                        toggleOrderExpand={toggleOrderExpand}
+                                    />
+                                ))}
                             </TabsContent>
                             <TabsContent value="finished" className="space-y-4">
-                                {orders.data
-                                    .filter((order) => order.status === 'finished')
-                                    .map((order) => (
-                                        <OrderCard
-                                            key={order.id}
-                                            order={order}
-                                            isExpanded={expandedOrder === order.id}
-                                            toggleOrderExpand={toggleOrderExpand}
-                                        />
-                                    ))}
+                                {orders.data.map((order) => (
+                                    <OrderCard
+                                        key={order.id}
+                                        order={order}
+                                        isExpanded={expandedOrder === order.id}
+                                        toggleOrderExpand={toggleOrderExpand}
+                                    />
+                                ))}
                             </TabsContent>
                         </Tabs>
                     </div>
