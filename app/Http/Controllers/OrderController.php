@@ -29,9 +29,6 @@ class OrderController extends Controller
             'rental_period.to'   => 'required|date|after_or_equal:rental_period.from',
         ]);
 
-        error_log($validated['rental_period']['from']);
-        
-
         DB::beginTransaction();
 
         try {
@@ -49,7 +46,7 @@ class OrderController extends Controller
                 return $item->equipment->price * $item->quantity * $rentalDays;
             });
 
-            $total = $subtotal + ($request->delivery_method === 'delivery' ? 10.00 : 0.00);
+            $total = $subtotal + ($request->delivery_method === 'delivery' ? 100000 : 100000);
 
             $order = Order::create([
                 'user_id'        => $user->id,
@@ -60,7 +57,7 @@ class OrderController extends Controller
                 'notes'          => $validated['notes'],
                 'purpose'        => $validated['purpose'],
                 'delivery_method' => $validated['delivery_method'],
-                'delivery_fee'   => $validated['delivery_method'] === 'delivery' ? 10 : 0,
+                'delivery_fee'   => $validated['delivery_method'] === 'delivery' ? 100000 : 0,
                 'rental_start'   => $validated['rental_period']['from'],
                 'rental_end'     => $validated['rental_period']['to'],
                 'subtotal'       => $subtotal,

@@ -22,10 +22,6 @@ const DELIVERY_FEE = 100000;
 
 export default function RentPage() {
     const { auth, cartItems } = usePage<InertiaPageProps & { cartItems: CartItem[] }>().props;
-    const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(),
-        to: new Date(),
-    });
     const [form, setForm] = useState({
         full_name: auth.user?.name,
         email: auth.user?.email,
@@ -34,16 +30,20 @@ export default function RentPage() {
         notes: '',
         purpose: '',
         delivery_method: 'pickup',
-        rental_period: date,
+        rental_period: {
+            from: new Date(),
+            to: new Date(),
+        } as DateRange | undefined,
     });
 
-    const rentDuration = date?.from && date?.to ? differenceInCalendarDays(date.to, date.from) + 1 : 1;
+    const rentDuration =
+        form.rental_period?.from && form.rental_period?.to ? differenceInCalendarDays(form.rental_period.to, form.rental_period.from) + 1 : 1;
     const subtotal = cartItems.reduce((total, item) => total + item.equipment.price * rentDuration * item.quantity, 0);
 
     const handleSubmit = () => {
         router.post('/orders', form, {
             onSuccess: () => {
-                Inertia.visit('/');
+                Inertia.visit('/profile/orders');
                 console.log('success');
             },
             onError: (errors) => {
@@ -108,9 +108,9 @@ export default function RentPage() {
                                     <Calendar
                                         mode="range"
                                         className="rounded-md border"
-                                        defaultMonth={date?.from}
-                                        selected={date}
-                                        onSelect={setDate}
+                                        defaultMonth={form.rental_period?.from}
+                                        selected={form.rental_period}
+                                        onSelect={(range) => setForm({ ...form, rental_period: range })}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -183,8 +183,8 @@ export default function RentPage() {
                                     <div className="flex items-center justify-between">
                                         <h3 className="font-medium">Rental Period</h3>
                                         <div className="text-muted-foreground text-sm">
-                                            {format(date?.from ?? new Date(), 'MMM dd, yyyy')} - {format(date?.to ?? new Date(), 'MMM dd, yyyy')} (
-                                            {rentDuration} days)
+                                            {format(form.rental_period?.from ?? new Date(), 'MMM dd, yyyy')} -{' '}
+                                            {format(form.rental_period?.to ?? new Date(), 'MMM dd, yyyy')} ({rentDuration} days)
                                         </div>
                                     </div>
                                     <Separator />
