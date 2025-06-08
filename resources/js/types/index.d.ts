@@ -55,10 +55,11 @@ export interface Equipment {
     description?: string | null;
     stock: number;
     status: 'active' | 'inactive';
-    slug?: string;
+    slug: string;
     category_id?: number | null;
     category?: Category | null;
     image?: string | null;
+    image_url?: string;
     price?: number | null;
     created_at?: string;
     updated_at?: string;
@@ -87,6 +88,7 @@ export type CartItem = {
         name: string;
         category: Category;
         image: string;
+        image_url?: string;
         price: number;
     };
 };

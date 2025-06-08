@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Helpers\DiskHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Equipment extends Model
 {
     protected $table = 'equipments';
+    protected $appends = ['image_url'];
 
     protected $fillable = [
         'name',
@@ -37,5 +39,18 @@ class Equipment extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        return DiskHelper::getS3Disk()->temporaryUrl(
+            $this->image,
+            now()->addMinutes(60)
+        );
     }
 }

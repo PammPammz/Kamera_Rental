@@ -17,7 +17,7 @@ const OrderItems = ({ items }: { items: Order['items'] }) => (
                 <div key={index} className="grid grid-cols-[auto_1fr_auto] items-center gap-4 border-t p-3">
                     <div className="h-16 w-16 overflow-hidden rounded-md">
                         <img
-                            src={item.equipment.image || 'https://picsum.photos/1000'}
+                            src={item.equipment.image_url || 'https://picsum.photos/1000'}
                             alt={item.equipment.name}
                             className="h-full w-full object-cover"
                         />
@@ -62,8 +62,6 @@ const OrderSummary = ({ order }: { order: Order }) => (
 
 const OrderFooter = ({ order }: { order: Order }) => {
     if (order.status !== 'approved' && order.status !== 'rejected') return null;
-
-    console.log('asdfasdfsadf', order.transaction_proof_url);
 
     return (
         <>

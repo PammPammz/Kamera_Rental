@@ -44,7 +44,6 @@ export default function RentPage() {
         router.post('/orders', form, {
             onSuccess: () => {
                 Inertia.visit('/profile/orders');
-                console.log('success');
             },
             onError: (errors) => {
                 console.error(errors);
@@ -193,7 +192,7 @@ export default function RentPage() {
                                         <div key={item.id} className="flex items-center gap-4 border-b pb-4 last:border-b-0 last:pb-0">
                                             <div className="h-16 w-16 overflow-hidden rounded-md">
                                                 <img
-                                                    src={item.equipment.image || 'https://picsum.photos/1000'}
+                                                    src={item.equipment.image_url || 'https://picsum.photos/1000'}
                                                     alt={item.equipment.name}
                                                     className="h-full w-full object-cover"
                                                 />

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Equipment;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
@@ -38,9 +39,17 @@ class EquipmentController extends Controller
             'stock' => 'required|integer|min:0',
             'status' => 'required|in:active,inactive',
             'category_id' => 'nullable|exists:categories,id',
+            'image_attachment' => 'nullable|image|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
+
+        // Handle file upload to S3
+        if ($request->hasFile('image_attachment')) {
+            $path = $request->file('image_attachment')->store('equipments', 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $validated['image'] = $path;
+        }
 
         Equipment::create($validated);
 
@@ -66,10 +75,24 @@ class EquipmentController extends Controller
             'stock' => 'required|integer|min:0',
             'status' => 'required|in:active,inactive',
             'category_id' => 'nullable|exists:categories,id',
+            'image_attachment' => 'nullable|image|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
 
+        // Handle optional new image
+        if ($request->hasFile('image_attachment')) {
+            // Optional: delete old image
+            if ($equipment->image) {
+                Storage::disk('s3')->delete($equipment->image);
+            }
+
+            $path = $request->file('image_attachment')->store('equipments', 's3');
+            Storage::disk('s3')->setVisibility($path, 'public');
+            $validated['image'] = $path;
+        }
+
+        // Update model
         $equipment->update($validated);
 
         return redirect()->route('dashboard.equipments.index')

@@ -22,6 +22,7 @@ const CreateEquipment = ({ categories, errors }: Props) => {
         stock: 0,
         status: 'active',
         category_id: '',
+        image_attachment: null as File | null,
     });
 
     const handleChange = (field: string, value: unknown) => {
@@ -33,7 +34,18 @@ const CreateEquipment = ({ categories, errors }: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        Inertia.post('/dashboard/equipments', form);
+
+        const data = new FormData();
+        data.append('name', form.name);
+        data.append('description', form.description);
+        data.append('stock', String(form.stock));
+        data.append('status', form.status);
+        if (form.category_id) data.append('category_id', form.category_id);
+        if (form.image_attachment) data.append('image_attachment', form.image_attachment);
+
+        Inertia.post('/dashboard/equipments', data, {
+            forceFormData: true,
+        });
     };
 
     return (
@@ -69,6 +81,17 @@ const CreateEquipment = ({ categories, errors }: Props) => {
                             required
                         />
                         {errors.stock && <p className="mt-1 text-sm text-red-600">{errors.stock[0]}</p>}
+                    </div>
+
+                    <div>
+                        <Label htmlFor="image">Image</Label>
+                        <Input
+                            id="image"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleChange('image_attachment', e.target.files?.[0] || null)}
+                        />
+                        {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image[0]}</p>}
                     </div>
 
                     {/* Status */}

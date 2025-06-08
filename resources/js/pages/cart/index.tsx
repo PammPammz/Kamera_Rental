@@ -68,7 +68,7 @@ export default function CartPage() {
                                                 </div>
                                                 <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md">
                                                     <img
-                                                        src={item.equipment.image ?? 'https://picsum.photos/1000'}
+                                                        src={item.equipment.image_url ?? 'https://picsum.photos/1000'}
                                                         alt={item.equipment.name}
                                                         className="h-full w-full object-cover"
                                                     />

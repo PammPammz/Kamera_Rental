@@ -23,7 +23,7 @@ export default function EquipmentDetail({ equipment, inCart }: Readonly<{ equipm
                     <div>
                         <div className="overflow-hidden rounded-lg">
                             <img
-                                src={equipment.image ?? 'https://picsum.photos/1000'}
+                                src={equipment.image_url ?? 'https://picsum.photos/1000'}
                                 alt={equipment.name}
                                 className="aspect-[4/3] w-full object-cover"
                             />

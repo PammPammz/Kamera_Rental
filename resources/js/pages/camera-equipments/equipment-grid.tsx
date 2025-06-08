@@ -14,7 +14,7 @@ const EquipmentGrid = ({ equipments }: { equipments: Equipment[] }) => (
                     <CardHeader className="p-0">
                         <div className="relative aspect-[4/3] overflow-hidden">
                             <img
-                                src={equipment.image ?? 'https://picsum.photos/1000'}
+                                src={equipment.image_url ?? 'https://picsum.photos/1000'}
                                 alt={equipment.name}
                                 className="h-full w-full object-cover transition-transform group-hover:scale-105"
                             />

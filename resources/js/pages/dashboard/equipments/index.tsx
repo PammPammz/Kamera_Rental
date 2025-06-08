@@ -22,7 +22,7 @@ export const equipmentsBreadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function EquipmentIndex({ equipments }: Props) {
-    const handleDelete = (id: number) => {
+    const handleDelete = (id: number | string) => {
         if (confirm('Are you sure you want to delete this equipment?')) {
             Inertia.delete(`/dashboard/equipments/${id}`);
         }
@@ -60,10 +60,10 @@ export default function EquipmentIndex({ equipments }: Props) {
                                         <TableCell>{equipment.stock}</TableCell>
                                         <TableCell className="capitalize">{equipment.status}</TableCell>
                                         <TableCell>
-                                            <Button onClick={() => Inertia.visit(`/dashboard/equipments/${equipment.id}/edit`)} className="mr-2">
+                                            <Button onClick={() => Inertia.visit(`/dashboard/equipments/${equipment.slug}/edit`)} className="mr-2">
                                                 Edit
                                             </Button>
-                                            <Button onClick={() => handleDelete(equipment.id)} variant="destructive">
+                                            <Button onClick={() => handleDelete(equipment.slug)} variant="destructive">
                                                 Delete
                                             </Button>
                                         </TableCell>
