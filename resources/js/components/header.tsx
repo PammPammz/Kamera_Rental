@@ -8,8 +8,12 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 
 export default function Header() {
-    const { props } = usePage<InertiaPageProps>();
+    const { props, url } = usePage<InertiaPageProps>();
     const user = props.auth?.user;
+
+    const isActive = (path: string) => {
+        return url === path || url.startsWith(path + '/');
+    };
 
     return (
         <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
@@ -20,17 +24,11 @@ export default function Header() {
                 </div>
 
                 <nav className="hidden items-center gap-6 md:flex">
-                    <Link href="/" className="font-medium">
+                    <Link href="/" className={`font-medium ${isActive('/') ? '' : 'text-muted-foreground'}`}>
                         Home
                     </Link>
-                    <Link href="#" className="text-muted-foreground font-medium">
+                    <Link href="/camera-equipments" className={`font-medium ${isActive('/camera-equipments') ? '' : 'text-muted-foreground'}`}>
                         Camera Equipments
-                    </Link>
-                    <Link href="#" className="text-muted-foreground font-medium">
-                        How It Works
-                    </Link>
-                    <Link href="#" className="text-muted-foreground font-medium">
-                        Contact
                     </Link>
                 </nav>
 

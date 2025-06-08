@@ -9,7 +9,7 @@ export default function Footer() {
                     <Camera className="h-5 w-5" />
                     <span>CameraRent</span>
                 </div>
-                <p className="text-muted-foreground text-sm">© 2023 CameraRent. All rights reserved.</p>
+                <p className="text-muted-foreground text-sm">Tugas RPL x PemWeb Kelompok 12</p>
                 <div className="flex gap-4">
                     <Link href="#" className="text-muted-foreground text-sm hover:underline">
                         Terms
