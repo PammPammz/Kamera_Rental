@@ -53,14 +53,13 @@ export interface Equipment {
     id: number;
     name: string;
     description?: string | null;
-    stock: number;
     status: 'active' | 'inactive';
     slug: string;
     category_id?: number | null;
     category?: Category | null;
     image?: string | null;
     image_url?: string;
-    price?: number | null;
+    price?: number;
     created_at?: string;
     updated_at?: string;
 }

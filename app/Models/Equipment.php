@@ -15,7 +15,6 @@ class Equipment extends Model
         'name',
         'slug',
         'description',
-        'stock',
         'status',
         'category_id',
         'image',

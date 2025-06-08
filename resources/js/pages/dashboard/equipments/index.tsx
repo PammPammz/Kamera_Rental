@@ -44,7 +44,7 @@ export default function EquipmentIndex({ equipments }: Props) {
                                 <TableHead>ID</TableHead>
                                 <TableHead>Name</TableHead>
                                 <TableHead>Category</TableHead>
-                                <TableHead>Stock</TableHead>
+                                <TableHead>Price</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Actions</TableHead>
                             </TableRow>
@@ -57,7 +57,7 @@ export default function EquipmentIndex({ equipments }: Props) {
                                         <TableCell>{equipment.id}</TableCell>
                                         <TableCell>{equipment.name}</TableCell>
                                         <TableCell>{equipment.category?.name || '-'}</TableCell>
-                                        <TableCell>{equipment.stock}</TableCell>
+                                        <TableCell>{equipment.price}</TableCell>
                                         <TableCell className="capitalize">{equipment.status}</TableCell>
                                         <TableCell>
                                             <Button onClick={() => Inertia.visit(`/dashboard/equipments/${equipment.slug}/edit`)} className="mr-2">

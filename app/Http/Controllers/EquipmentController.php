@@ -36,10 +36,10 @@ class EquipmentController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'stock' => 'required|integer|min:0',
             'status' => 'required|in:active,inactive',
             'category_id' => 'nullable|exists:categories,id',
             'image_attachment' => 'nullable|image|max:2048',
+            'price' => 'required|numeric|min:0',
         ]);
 
         $validated['slug'] = Str::slug($validated['name']);
@@ -70,15 +70,17 @@ class EquipmentController extends Controller
     public function update(Request $request, Equipment $equipment)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'stock' => 'required|integer|min:0',
-            'status' => 'required|in:active,inactive',
+            'status' => 'nullable|in:active,inactive',
             'category_id' => 'nullable|exists:categories,id',
             'image_attachment' => 'nullable|image|max:2048',
+            'price' => 'nullable|numeric|min:0',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        if (!empty($validated['name'])) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
 
         // Handle optional new image
         if ($request->hasFile('image_attachment')) {

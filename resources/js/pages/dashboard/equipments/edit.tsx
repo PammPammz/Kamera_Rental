@@ -19,7 +19,7 @@ const EditEquipment = ({ equipment, categories, errors }: Props) => {
     const [form, setForm] = useState({
         name: equipment.name,
         description: equipment.description || '',
-        stock: equipment.stock,
+        price: equipment.price,
         status: equipment.status,
         category_id: equipment.category_id ? equipment.category_id.toString() : '',
         image_attachment: null as File | null,
@@ -37,14 +37,19 @@ const EditEquipment = ({ equipment, categories, errors }: Props) => {
         e.preventDefault();
 
         const data = new FormData();
+        data.append('_method', 'PUT');
         data.append('name', form.name);
         data.append('description', form.description);
-        data.append('stock', String(form.stock));
+        data.append('price', String(form.price));
         data.append('status', form.status);
         if (form.category_id) data.append('category_id', form.category_id);
         if (form.image_attachment) data.append('image_attachment', form.image_attachment);
 
-        Inertia.put(`/dashboard/equipments/${equipment.slug}`, data, { forceFormData: true });
+        for (const [key, val] of data.entries()) {
+            console.log(key, val);
+        }
+
+        Inertia.post(`/dashboard/equipments/${equipment.slug}`, data, { forceFormData: true });
     };
 
     return (
@@ -58,7 +63,7 @@ const EditEquipment = ({ equipment, categories, errors }: Props) => {
                     <div>
                         <Label htmlFor="name">Name</Label>
                         <Input id="name" type="text" value={form.name} onChange={(e) => handleChange('name', e.target.value)} required />
-                        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name[0]}</p>}
+                        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                     </div>
 
                     {/* Description */}
@@ -71,21 +76,21 @@ const EditEquipment = ({ equipment, categories, errors }: Props) => {
                             onChange={(e) => handleChange('description', e.target.value)}
                             rows={3}
                         />
-                        {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description[0]}</p>}
+                        {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                     </div>
 
-                    {/* Stock */}
+                    {/* Price */}
                     <div>
-                        <Label htmlFor="stock">Stock</Label>
+                        <Label htmlFor="price">Price</Label>
                         <Input
-                            id="stock"
+                            id="price"
                             type="number"
                             min={0}
-                            value={form.stock}
-                            onChange={(e) => handleChange('stock', parseInt(e.target.value, 10))}
+                            value={form.price}
+                            onChange={(e) => handleChange('price', parseInt(e.target.value, 10))}
                             required
                         />
-                        {errors.stock && <p className="mt-1 text-sm text-red-600">{errors.stock[0]}</p>}
+                        {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price}</p>}
                     </div>
 
                     <div>
@@ -97,7 +102,7 @@ const EditEquipment = ({ equipment, categories, errors }: Props) => {
                             onChange={(e) => handleChange('image_attachment', e.target.files?.[0] || null)}
                         />
                         {form.image_url && <img src={form.image_url} alt="camera equipment" className="mt-2 w-48 rounded" />}
-                        {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image[0]}</p>}
+                        {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image}</p>}
                     </div>
 
                     {/* Status */}
@@ -112,7 +117,7 @@ const EditEquipment = ({ equipment, categories, errors }: Props) => {
                                 <SelectItem value="inactive">Inactive</SelectItem>
                             </SelectContent>
                         </Select>
-                        {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status[0]}</p>}
+                        {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status}</p>}
                     </div>
 
                     {/* Category */}
@@ -130,7 +135,7 @@ const EditEquipment = ({ equipment, categories, errors }: Props) => {
                                 ))}
                             </SelectContent>
                         </Select>
-                        {errors.category_id && <p className="mt-1 text-sm text-red-600">{errors.category_id[0]}</p>}
+                        {errors.category_id && <p className="mt-1 text-sm text-red-600">{errors.category_id}</p>}
                     </div>
 
                     {/* Submit */}

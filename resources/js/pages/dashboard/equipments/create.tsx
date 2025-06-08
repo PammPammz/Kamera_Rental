@@ -19,7 +19,7 @@ const CreateEquipment = ({ categories, errors }: Props) => {
     const [form, setForm] = useState({
         name: '',
         description: '',
-        stock: 0,
+        price: 100000,
         status: 'active',
         category_id: '',
         image_attachment: null as File | null,
@@ -38,7 +38,7 @@ const CreateEquipment = ({ categories, errors }: Props) => {
         const data = new FormData();
         data.append('name', form.name);
         data.append('description', form.description);
-        data.append('stock', String(form.stock));
+        data.append('price', String(form.price));
         data.append('status', form.status);
         if (form.category_id) data.append('category_id', form.category_id);
         if (form.image_attachment) data.append('image_attachment', form.image_attachment);
@@ -69,18 +69,18 @@ const CreateEquipment = ({ categories, errors }: Props) => {
                         {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description[0]}</p>}
                     </div>
 
-                    {/* Stock */}
+                    {/* Price */}
                     <div>
-                        <Label htmlFor="stock">Stock</Label>
+                        <Label htmlFor="price">Price</Label>
                         <Input
-                            id="stock"
+                            id="price"
                             type="number"
                             min={0}
-                            value={form.stock}
-                            onChange={(e) => handleChange('stock', parseInt(e.target.value, 10))}
+                            value={form.price}
+                            onChange={(e) => handleChange('price', parseInt(e.target.value, 10))}
                             required
                         />
-                        {errors.stock && <p className="mt-1 text-sm text-red-600">{errors.stock[0]}</p>}
+                        {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price[0]}</p>}
                     </div>
 
                     <div>
