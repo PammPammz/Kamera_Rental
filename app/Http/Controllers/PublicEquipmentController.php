@@ -75,6 +75,7 @@ class PublicEquipmentController extends Controller
                 'description' => $equipment->description,
                 'price' => $equipment->price,
                 'image' => $equipment->image,
+                'image_url' => $equipment->image_url,
                 'category' => $equipment->category,
             ],
             'inCart' => $inCart
