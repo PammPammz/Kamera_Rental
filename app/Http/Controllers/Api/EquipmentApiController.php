@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CartItem;
+use Illuminate\Support\Facades\Log;
 
 class EquipmentApiController extends Controller
 {
@@ -52,8 +53,6 @@ class EquipmentApiController extends Controller
 
     public function show(Equipment $equipment)
     {
-        $equipment->load('category');
-
         $inCart = false;
         if (Auth::check()) {
             $inCart = CartItem::where('user_id', Auth::id())

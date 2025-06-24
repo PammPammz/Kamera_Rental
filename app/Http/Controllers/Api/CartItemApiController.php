@@ -69,11 +69,15 @@ class CartItemApiController extends Controller
         ]);
     }
 
-    public function destroy(Equipment $equipment)
+    public function destroy(CartItem $cartItem)
     {
-        CartItem::where('user_id', Auth::id())
-            ->where('equipment_id', $equipment->id)
-            ->delete();
+
+        if ($cartItem->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+
+        $cartItem->delete();
 
         return response()->json([
             'message' => 'Item removed from cart.',
