@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -35,6 +36,9 @@ class OrderApiController extends Controller
             $user = Auth::user();
             $cartItems = CartItem::with('equipment')->where('user_id', $user->id)->get();
 
+            $rentalStart = Carbon::parse($validated['rental_period']['from'])->toIso8601String();
+            $rentalEnd = Carbon::parse($validated['rental_period']['to'])->toIso8601String();
+
             if ($cartItems->isEmpty()) {
                 return response()->json(['message' => 'Your cart is empty.'], 400);
             }
@@ -58,8 +62,8 @@ class OrderApiController extends Controller
                 'purpose' => $validated['purpose'],
                 'delivery_method' => $validated['delivery_method'],
                 'delivery_fee' => $validated['delivery_method'] === 'delivery' ? 100000 : 0,
-                'rental_start' => $validated['rental_period']['from'],
-                'rental_end' => $validated['rental_period']['to'],
+                'rental_start' => $rentalStart,
+                'rental_end' => $rentalEnd,
                 'subtotal' => $subtotal,
                 'total' => $total,
             ]);

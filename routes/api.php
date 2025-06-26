@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/equipments', [EquipmentApiController::class, 'index']);
 Route::get('/equipments/home', [EquipmentApiController::class, 'home']);
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/equipments/{equipment}', [EquipmentApiController::class, 'show']);
-});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/cart', [CartItemApiController::class, 'index']);
@@ -21,7 +18,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/checkout', [OrderApiController::class, 'checkoutSummary']);
     Route::post('/orders', [OrderApiController::class, 'store']);
-    Route::get('/orders/user', [UserOrderApiController::class, 'index']);
+    Route::get('/orders', [UserOrderApiController::class, 'index']);
+
+    Route::get('/equipments/{equipment}', [EquipmentApiController::class, 'show']);
+
 });
 
 
