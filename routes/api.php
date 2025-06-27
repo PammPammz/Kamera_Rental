@@ -24,8 +24,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-
-
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthApiController::class, 'register']);
     Route::post('/login', [AuthApiController::class, 'login']);
